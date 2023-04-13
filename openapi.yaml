@@ -8,86 +8,70 @@ info:
   version: 1.0.0
 tags:
   - name: user
-    description: Two types of users are admin and public
+    description: Everything about users
   - name: books
     description: Everything about books
   - name: reservation
-    description:
-      store user id and book id with quantity and reservation and return
-      date
+    description: Everything about reservations
 paths:
-  /user:
+  /auth/register:
     post:
       tags:
         - user
       summary: create user
       description: |
         create user account if not created
-      operationId: userPOST
-      parameters:
-        - name: Email
-          in: query
-          description: The user email for login
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text
-          required: true
-          style: form
-          explode: true
-          schema:
-            maximum: 50
-            minimum: 8
-            type: string
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
-          description: search results matching criteria
+          description: Registered Successfully
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
                   $ref: "#/components/schemas/User"
                 x-content-type: application/json
         "400":
           description: bad input parameter
-  /reservation:
+  /auth/login:
     post:
       tags:
-        - reservation
-      summary: create reservation
-      description: user reservation information created
-      operationId: reservationPOST
+        - user
+      summary: Login user
+      description: |
+        Login if user exist
+      operationId: loginUser
       requestBody:
-        description: create reservation
+        description: Login Credentials(email and password)
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Reservation"
-        required: true
+              $ref: "#/components/schemas/User"
       responses:
         "200":
-          description: reservation information
+          description: Loggedin Successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Reservation"
-                x-content-type: application/json
-  /book:
+                type: string
+        "400":
+          description: invalid credentials
+  /books:
     post:
       tags:
         - books
-      summary: Add a new book to the store
-      description: Add a new book to the store
+      summary: Add a new book
+      description: Add a new book
       operationId: addBook
       requestBody:
-        description: Create a new book in the store
+        description: Create a new book
         content:
           application/json:
             schema:
@@ -103,11 +87,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Book"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Book"
         "405":
-          description: Invalid input
+          description: Something went
     get:
       tags:
         - books
@@ -125,12 +106,21 @@ paths:
                   $ref: "#/components/schemas/Book"
         "404":
           description: Books not found
+  /books/{bookId}:
     put:
       tags:
         - books
       summary: update an existing book
       description: Update an existing book by Id
       operationId: updateBook
+      parameters:
+        - name: bookId
+          in: path
+          description: Book id to update
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         description: Update an existing book in the bookstore
         content:
@@ -154,7 +144,6 @@ paths:
           description: book not found
         "405":
           description: Validation
-  /book/{bookId}:
     delete:
       tags:
         - books
@@ -174,52 +163,18 @@ paths:
           description: Successfully deleted
         "400":
           description: Invalid book ID
-  /book/findByStatus:
+
+  /books/find:
     get:
       tags:
         - books
-      summary: Finds books by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findBooksByStatus
-      parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: false
-          explode: true
-          schema:
-            type: string
-            default: available
-            enum:
-              - available
-              - unavailable
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Book"
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Book"
-        "400":
-          description: Invalid status value
-  /book/findByName:
-    get:
-      tags:
-        - books
-      summary: Find Book by name
+      summary: Find Book By Query
       description: Returns a single Book
-      operationId: getBookByName
+      operationId: getBookByQuery
       parameters:
-        - name: name
+        - name: query
           in: query
-          description: Name of the book
+          description: Something about the Book
           required: true
           schema:
             type: string
@@ -234,9 +189,52 @@ paths:
               schema:
                 $ref: "#/components/schemas/Book"
         "400":
-          description: Invalid name supplied
+          description: Invalid input supplied
         "404":
           description: Book not found
+  /reservation:
+    post:
+      tags:
+        - reservation
+      summary: create reservation
+      description: user reservation information created
+      operationId: reservationPOST
+      requestBody:
+        description: create reservation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Reservation"
+        required: true
+      responses:
+        "200":
+          description: reservation information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reservation"
+                x-content-type: application/json
+    get:
+      tags:
+        - reservation
+      summary: List all reserved books of user
+      description: Returns reserved books of user
+      operationId: getReservedBooksOfUser
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reservation"
+        "404":
+          description: No Reserved Books
 components:
   schemas:
     User:
