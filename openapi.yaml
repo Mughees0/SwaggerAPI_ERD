@@ -1,46 +1,48 @@
 openapi: 3.0.0
 info:
   title: Library Book Store API
-  description: This is library API used for study purpose. The user can see list of
+  description:
+    This is library API used for study purpose. The user can see list of
     book and can reserve. User also need to create account to reserve book. The admin
     panner used for admin to perform CRUD operation. By Abdul Mughees, Rajeev sah
   version: 1.0.0
 tags:
-- name: user
-  description: Two types of users are admin and public
-- name: books
-  description: Everything about books
-- name: reservation
-  description: store user id and book id with quantity and reservation and return
-    date
+  - name: user
+    description: Two types of users are admin and public
+  - name: books
+    description: Everything about books
+  - name: reservation
+    description:
+      store user id and book id with quantity and reservation and return
+      date
 paths:
   /user:
     post:
       tags:
-      - user
+        - user
       summary: create user
       description: |
         create user account if not created
       operationId: userPOST
       parameters:
-      - name: Email
-        in: query
-        description: The user email for login
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: password
-        in: query
-        description: The password for login in clear text
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 50
-          minimum: 8
-          type: string
+        - name: Email
+          in: query
+          description: The user email for login
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          style: form
+          explode: true
+          schema:
+            maximum: 50
+            minimum: 8
+            type: string
       responses:
         "200":
           description: search results matching criteria
@@ -49,14 +51,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
                 x-content-type: application/json
         "400":
           description: bad input parameter
   /reservation:
     post:
       tags:
-      - reservation
+        - reservation
       summary: create reservation
       description: user reservation information created
       operationId: reservationPOST
@@ -65,7 +67,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Reservation'
+              $ref: "#/components/schemas/Reservation"
         required: true
       responses:
         "200":
@@ -75,7 +77,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Reservation'
+                  $ref: "#/components/schemas/Reservation"
                 x-content-type: application/json
   /book:
     post:
@@ -89,42 +91,42 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: "#/components/schemas/Book"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: "#/components/schemas/Book"
         required: true
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'          
+                $ref: "#/components/schemas/Book"
             application/xml:
               schema:
-                $ref: '#/components/schemas/Book'
-        '405':
+                $ref: "#/components/schemas/Book"
+        "405":
           description: Invalid input
     get:
       tags:
         - books
-      summary: List all books 
+      summary: List all books
       description: Returns books from the store
       operationId: getBooks
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-               type: array
-               items:
-                 $ref: '#/components/schemas/Book'
-        '404':
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+        "404":
           description: Books not found
     put:
-      tags: 
+      tags:
         - books
       summary: update an existing book
       description: Update an existing book by Id
@@ -134,24 +136,24 @@ paths:
         content:
           application/json:
             schema:
-               $ref: '#/components/schemas/Book'
+              $ref: "#/components/schemas/Book"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: "#/components/schemas/Book"
         required: true
-      responses: 
-        '200':
+      responses:
+        "200":
           description: Successful Operation
-          content: 
+          content:
             application/json:
               schema:
-                 $ref: '#/components/schemas/Book'
-        '400':
+                $ref: "#/components/schemas/Book"
+        "400":
           description: Invalid ID given
-        '404':
+        "404":
           description: book not found
-        '405':
-          description: Validation 
+        "405":
+          description: Validation
   /book/{bookId}:
     delete:
       tags:
@@ -168,9 +170,9 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
+        "200":
           description: Successfully deleted
-        '400':
+        "400":
           description: Invalid book ID
   /book/findByStatus:
     get:
@@ -192,22 +194,22 @@ paths:
               - available
               - unavailable
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'          
+                  $ref: "#/components/schemas/Book"
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
-        '400':
+                  $ref: "#/components/schemas/Book"
+        "400":
           description: Invalid status value
-  /book/findByName:      
+  /book/findByName:
     get:
       tags:
         - books
@@ -222,27 +224,26 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'          
+                $ref: "#/components/schemas/Book"
             application/xml:
               schema:
-                $ref: '#/components/schemas/Book'
-        '400':
+                $ref: "#/components/schemas/Book"
+        "400":
           description: Invalid name supplied
-        '404':
+        "404":
           description: Book not found
 components:
   schemas:
     User:
       required:
-      - createdDate
-      - email
-      - password
-      - role
+        - username
+        - email
+        - password
       type: object
       properties:
         id:
@@ -252,45 +253,12 @@ components:
         email:
           type: string
           example: user@email.com
+        username:
+          type: string
+          example: username
         password:
           type: string
           example: password
-        createdDate:
-          type: string
-          format: date-time
-          example: 2016-08-29T09:12:33.001Z
-      example:
-        password: password
-        createdDate: 2016-08-29T09:12:33.001Z
-        id: d290f1ee-6c54-4b01-90e6-d701748f0851
-        email: user@email.com
-    Reservation:
-      required:
-      - bookId
-      - quantity
-      - reservedDate
-      - returnDate
-      - userId
-      type: object
-      properties:
-        userId:
-          type: string
-        bookId:
-          type: string
-        quantity:
-          type: number
-        reservedDate:
-          type: string
-          format: date-time
-        returnedDate:
-          type: string
-          format: date-time
-      example:
-        reservedDate: 2000-01-23T04:56:07.000+00:00
-        quantity: 1
-        userId: userId
-        bookId: bookId
-        returnedDate: 2000-01-23T04:56:07.000+00:00
     Author:
       type: object
       properties:
@@ -301,59 +269,82 @@ components:
         name:
           type: string
           example: J.K Rowling
+        email:
+          type: string
+          example: user@email.com
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Fantasy
     Book:
       required:
-        - name
-        - imageURL
+        - title
+        - cover
         - isbn
         - description
         - publisher
         - publishedDate
         - author
-        - genre
-        - status
+        - category
+        - quantity
       type: object
       properties:
         id:
           type: integer
           format: int64
           example: 10
-        name:
-          type: string
-          example: Harry Potter and the Philosopher's Stone
-        isbn: 
+        isbn:
           type: string
           example: 978-3-16-148410-0
+        title:
+          type: string
+          example: Harry Potter and the Philosopher's Stone
+        cover:
+          type: string
+          example: https://imageLinkexample.com
         description:
           type: string
           example: The first book in the Harry Potter series, in which Harry discovers his magical heritage and begins his journey at Hogwarts School of Witchcraft and Wizardry.
-        publisher: 
+        quantity:
+          type: integer
+          format: int64
+          example: 10
+        publisher:
           type: string
           example: Bloomsbury
         publishedDate:
           type: string
           example: 1997-06-26
-        genre: 
-          type: string
-          example: Fantasy
+        category:
+          $ref: "#/components/schemas/Category"
         author:
-          $ref: '#/components/schemas/Author'
-        borrower:
-          $ref: '#/components/schemas/User'
-        borrowedDate:
-          $ref: '#/components/schemas/Reservation'
-        returnDate:
-          $ref: '#/components/schemas/Reservation'
-        status:
+          $ref: "#/components/schemas/Author"
+    Reservation:
+      required:
+        - bookId
+        - userId
+        - reservedDate
+        - returnDate
+      type: object
+      properties:
+        bookId:
           type: string
-          description: Book status in the store
-          enum:
-            - available
-            - unavailable
-            
-        
-          
-          
-          
-          
-    
+        userId:
+          type: string
+        reservedDate:
+          type: string
+          format: date-time
+        returnedDate:
+          type: string
+          format: date-time
+      example:
+        bookId: bookId
+        userId: userId
+        reservedDate: 2000-01-23T04:56:07.000+00:00
+        returnedDate: 2000-01-23T04:56:07.000+00:00
